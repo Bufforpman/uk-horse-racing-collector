@@ -1,0 +1,41 @@
+name: Daily Racing Collector
+
+on:
+  schedule:
+    # 22:00 UTC = 23:00 BST / 22:00 GMT — after UK racing finishes.
+    # GitHub's cron scheduler can run a few minutes late under load;
+    # that's fine, we just need "after the last race", not exact timing.
+    - cron: '0 22 * * *'
+  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to commit data back to the repo
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run daily collector
+        env:
+          RACING_API_USERNAME: ${{ secrets.RACING_API_USERNAME }}
+          RACING_API_PASSWORD: ${{ secrets.RACING_API_PASSWORD }}
+        run: python daily_collector.py
+
+      - name: Commit and push updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add horse_racing_pipeline/
+          git diff --staged --quiet || git commit -m "Daily racing data collection $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
