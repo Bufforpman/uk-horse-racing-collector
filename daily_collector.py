@@ -330,7 +330,7 @@ def count(table):
         return 0
 
 n_days = con2.execute(
-    "SELECT COUNT(DISTINCT DATE(as_of_utc)) FROM raw.racecards_races"
+    "SELECT COUNT(DISTINCT CAST(as_of_utc AS DATE)) FROM raw.racecards_races"
 ).fetchone()[0] if count("raw.racecards_races") else 0
 
 print("\n" + "=" * 70)
