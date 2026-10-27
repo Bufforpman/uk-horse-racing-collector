@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "source": "The Racing API",
+    "endpoint": "/v1/results/today/free",
+    "retrieved_at_utc": "2026-10-27T01:02:27.342006+00:00"
+  },
+  "data": {
+    "results": [],
+    "total": 0,
+    "limit": 50,
+    "skip": 0,
+    "query": [
+      [
+        "date",
+        "2026-10-27"
+      ]
+    ]
+  }
+}
